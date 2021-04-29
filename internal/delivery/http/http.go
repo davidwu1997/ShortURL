@@ -20,7 +20,7 @@ func (server *HttpServer) setRouter(handler *handler.Handler) {
 	v1 := server.Group("api/v1")
 	{
 		v1.POST("/urls", handler.UploadURL)
-		v1.DELETE("/urls/:urlID", handler.DeleteURL)
+		v1.DELETE("/urls/:url", handler.DeleteURL)
 	}
 
 	server.GET("/:url", handler.RedirectURL)
@@ -37,7 +37,7 @@ func NewHttpServer(service *service.ShortURL, redis *redis.Cache) *HttpServer {
 	}
 
 	// Define a limit rate to 60 requests per hour.
-	rate, err := limiter.NewRateFromFormatted("4-H")
+	rate, err := limiter.NewRateFromFormatted("60-H")
 	if err != nil {
 		log.Fatal(err)
 	}

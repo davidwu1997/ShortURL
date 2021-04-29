@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 )
 
 type ShortUrlResponse struct {
@@ -11,24 +10,23 @@ type ShortUrlResponse struct {
 	ShortUrl string
 }
 
-func (s *ShortURL) Upload(ctx context.Context, url string) error {
+func (s *ShortURL) Upload(ctx context.Context, url string) (string, error) {
 	if url == "" {
-		return errors.New("url is empty")
+		return "", errors.New("url is empty")
 	}
 
 	id, err := s.DataBase.UploadURL(url)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	encodeString := Encode(uint64(id))
-	fmt.Println(encodeString)
 
 	if err := s.redisClient.Set(ctx, encodeString, url); err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return encodeString, nil
 }
 
 func (s *ShortURL) Delete(context context.Context, key string) error {

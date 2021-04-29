@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
+	"shortURL/config"
 	"shortURL/pkg/service"
 
 	"github.com/gin-gonic/gin"
@@ -12,21 +12,26 @@ type Handler struct {
 	ShortURL *service.ShortURL
 }
 
-func (h *Handler) UploadURL(context *gin.Context) {
-	urls := context.PostForm("urls")
-	fmt.Println(urls)
+type UploadRequest struct {
+	Url string `json:"url"`
+}
 
-	if err := h.ShortURL.Upload(context, urls); err != nil {
+func (h *Handler) UploadURL(context *gin.Context) {
+	request := &UploadRequest{}
+	context.BindJSON(request)
+
+	urlID, err := h.ShortURL.Upload(context, request.Url)
+	if err != nil {
 		context.JSON(http.StatusNotFound, nil)
 		return
 	}
 
-	//response := &service.ShortUrlResponse{
-	//	Url_ID: ,
-	//	//ShortUrl:
-	//}
+	response := &service.ShortUrlResponse{
+		Url_ID:   urlID,
+		ShortUrl: config.Get().ShortURL.BasePath + urlID,
+	}
 
-	context.JSON(http.StatusOK, nil)
+	context.JSON(http.StatusOK, response)
 }
 
 func (h *Handler) DeleteURL(context *gin.Context) {

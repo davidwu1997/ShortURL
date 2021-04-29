@@ -1,7 +1,6 @@
 package migrate
 
 import (
-	"fmt"
 	"shortURL/pkg/repository/mysql/database"
 
 	"shortURL/deployment/migration"
@@ -23,7 +22,7 @@ func (application Application) Start() error {
 	if err := m.Migrate(); err != nil {
 		return err
 	}
-	fmt.Println("migration complete")
+
 	return nil
 }
 

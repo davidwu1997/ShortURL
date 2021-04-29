@@ -1,8 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"shortURL/pkg/logger"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -12,10 +12,11 @@ var _config *Config
 
 // Config ...
 type Config struct {
-	Logger LoggerConfig `mapstructure:"logger"`
-	HTTP   HTTPConfig   `mapstructure:"http"`
-	Redis  RedisConfig  `mapstructure:"redis"`
-	MySQL  MySQLConfig  `mapstructure:"mysql"`
+	Logger   LoggerConfig   `mapstructure:"logger"`
+	HTTP     HTTPConfig     `mapstructure:"http"`
+	Redis    RedisConfig    `mapstructure:"redis"`
+	MySQL    MySQLConfig    `mapstructure:"mysql"`
+	ShortURL ShortURLConfig `mapstructure:"shorturl"`
 }
 
 type LoggerConfig struct {
@@ -31,6 +32,11 @@ type MySQLConfig struct {
 	DSN string `mapstructure:"dsn"`
 }
 
+type ShortURLConfig struct {
+	BasePath   string        `mapstructure:"base_path"`
+	ExpireTime time.Duration `mapstructure:"expire_time"`
+}
+
 type RedisConfig struct {
 	Host         string        `mapstructure:"host"`
 	Port         uint          `mapstructure:"port"`
@@ -39,7 +45,6 @@ type RedisConfig struct {
 	MinIdleConns int           `mapstructure:"min_idle_conns"`
 	MaxPoolSize  int           `mapstructure:"max_pool_size"`
 	DialTimeout  time.Duration `mapstructure:"dial_timeout"`
-	ExpireTime   time.Duration `mapstructure:"expire_time"`
 }
 
 // NewInjection ...
@@ -58,11 +63,11 @@ func Set(config *Config) {
 }
 
 func New() (*Config, error) {
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
 	configPath := viper.GetString("CONFIG_PATH")
 	if configPath == "" {
-		fmt.Println(viper.GetString("PROJ_DIR"))
 		configPath = viper.GetString("PROJ_DIR") + "/deployment/config"
 	}
 

@@ -15,7 +15,7 @@ func (c *Cache) Get(ctx context.Context, key string) (string, error) {
 }
 
 func (c *Cache) Set(ctx context.Context, key, value string) error {
-	expireTime := config.Get().Redis.ExpireTime
+	expireTime := config.Get().ShortURL.ExpireTime
 	if _, err := c.Client.Set(ctx, key, value, expireTime).Result(); err != nil {
 		return err
 	}

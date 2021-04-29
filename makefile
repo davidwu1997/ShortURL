@@ -1,3 +1,4 @@
+.PHONY: deploy-local
 p=$(shell pwd)
 
 all: server
@@ -10,3 +11,7 @@ migrate:
 
 go-vendor:
 	go mod tidy
+
+deploy-local:
+	@docker-compose -f docker-compose.yml build
+	@docker-compose -f docker-compose.yml up

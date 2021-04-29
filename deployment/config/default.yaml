@@ -9,7 +9,8 @@ mysql:
   dsn: "test:test@tcp(localhost:3306)/local?charset=utf8mb4&parseTime=True&loc=Local"
 
 shorturl:
-  expire_time : 1000
+  base_path: "http://localhost:8080/"
+  expire_time: 24h
 
 redis:
   cluster_mode: false
@@ -20,4 +21,3 @@ redis:
   pool_size_per_node: 2
   db: 2
   dial_timeout: 15s
-  expire_time: 24h

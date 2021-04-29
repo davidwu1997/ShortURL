@@ -1,0 +1,69 @@
+version: '3.1'
+
+services:
+  server:
+    image: davidwu1997/short_url
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    command: server
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - PROJ_DIR=/shortURL
+      - REDIS_HOST=redis
+      - MYSQL_DSN=test:test@tcp(db:3306)/local?charset=utf8mb4&parseTime=true&loc=UTC&time_zone=UTC
+    depends_on:
+      - redis
+      - start_dependencies
+
+  migrate:
+    image: davidwu1997/short_url
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    command: migrate
+    restart: always
+    environment:
+      - PROJ_DIR=/shortURL
+      - REDIS_HOST=redis
+      - MYSQL_DSN=test:test@tcp(db:3306)/local?charset=utf8mb4&parseTime=true&loc=UTC&time_zone=UTC
+    depends_on:
+      - start_dependencies
+
+  start_dependencies:
+    image: alpine:latest
+    links:
+      - db
+    command: >
+      /bin/sh -c "
+        echo Waiting for mysql service start...;
+        while ! nc -z db 3306;
+        do
+          sleep 1;
+        done;
+        echo Connected!;
+      "
+
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: local
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    healthcheck:
+      test: "exit 0"
+
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379

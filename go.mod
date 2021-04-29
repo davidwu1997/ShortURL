@@ -3,6 +3,7 @@ module shortURL
 go 1.16
 
 require (
+	github.com/cenk/backoff v2.2.1+incompatible
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-gormigrate/gormigrate/v2 v2.0.0
 	github.com/go-redis/redis/v8 v8.8.2
