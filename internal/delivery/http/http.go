@@ -36,7 +36,6 @@ func NewHttpServer(service *service.ShortURL, redis *redis.Cache) *HttpServer {
 		ShortURL: service,
 	}
 
-	// Define a limit rate to 60 requests per hour.
 	rate, err := limiter.NewRateFromFormatted("60-H")
 	if err != nil {
 		log.Fatal(err)

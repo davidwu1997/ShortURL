@@ -28,5 +28,4 @@ func runMigrateCmd(cmd *cobra.Command, args []string) {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-	//launcher.Launch(app.Start, nil, time.Duration(timeout)*time.Second)
 }
