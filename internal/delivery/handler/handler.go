@@ -18,7 +18,10 @@ type UploadRequest struct {
 
 func (h *Handler) UploadURL(context *gin.Context) {
 	request := &UploadRequest{}
-	context.BindJSON(request)
+	if err := context.BindJSON(request); err != nil {
+		context.String(http.StatusNotFound, "url can not receive  ")
+		return
+	}
 
 	urlID, err := h.ShortURL.Upload(context, request.Url)
 	if err != nil {
