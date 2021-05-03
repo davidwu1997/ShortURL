@@ -19,7 +19,7 @@ type UploadRequest struct {
 func (h *Handler) UploadURL(context *gin.Context) {
 	request := &UploadRequest{}
 	if err := context.BindJSON(request); err != nil {
-		context.String(http.StatusNotFound, "url can not receive  ")
+		context.String(http.StatusNotFound, "url can not receive")
 		return
 	}
 
