@@ -15,7 +15,7 @@ type Application struct {
 }
 
 func (application Application) Start() error {
-	application.logger.Info().Msgf("http server listen :%d", application.config.HTTP.Port)
+	application.logger.Info().Msgf("http server listens :%d", application.config.HTTP.Port)
 	return application.httpServer.Run(fmt.Sprintf(":%d", application.config.HTTP.Port))
 }
 
